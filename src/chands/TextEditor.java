@@ -81,29 +81,45 @@ public class TextEditor extends JFrame {
 
 				if(frameTitle.contains("Edit Note")) {
 
-					Singleton.getInstance().editTextListElement(Singleton.getInstance().getSelectectedUIIndex(), new StringBuilder(textArea.getText()));
-					
-					
-				}else
-				{
-					try {
-						Singleton.getInstance().setTextListElement(new StringBuilder(textArea.getText()));
-					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+					if(!textArea.getText().equals(""))
+					{
+						Singleton.getInstance().editTextListElement(Singleton.getInstance().getSelectectedUIIndex(), new StringBuilder(textArea.getText()));
+					}else
+					{
+						frameERROR err = new frameERROR();
+						err.setVisible(true);
+						err.setAlwaysOnTop(true);
 					}
 					
-					System.out.println("Saving Text: " + textArea.getText());
+				}else //else its save note
+				{
+					if(!textArea.getText().equals("")) {
+						try {
+							Singleton.getInstance().setTextListElement(new StringBuilder(textArea.getText()));
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 					
-					Singleton.getInstance().getJListNotePad().updateUI();
+						System.out.println("Saving Text: " + textArea.getText());
+						
+						Singleton.getInstance().getJListNotePad().updateUI();
+						
+						Singleton.getInstance().getTempMainFrame().setVisible(true);
+						
+						Singleton.getInstance().setTempMainFrame(null); // clear the variable before I close the editor
+						
+						//close JFrame Editor
+						dispose();
+					}else {
+						
+						frameERROR err = new frameERROR();
+						err.setVisible(true);
+						err.setAlwaysOnTop(true);
+					}
 				}
 				
-				Singleton.getInstance().getTempMainFrame().setVisible(true);
-				
-				Singleton.getInstance().setTempMainFrame(null); // clear the variable before I close the editor
-				
-				//close JFrame Editor
-				dispose();
+
 				
 				
 				
