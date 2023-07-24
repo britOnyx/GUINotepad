@@ -62,13 +62,7 @@ public class MainFrame {
 					
 					MainFrame window = new MainFrame();
 					window.frmMyNotepad.setVisible(true);
-					
-					//Add Static contents to the list
-					/*singleton.setTextListElement(new StringBuilder("Test"));
-					singleton.setTextListElement(new StringBuilder("Fell"));
-					singleton.setTextListElement(new StringBuilder("Suresh"));
-					singleton.setTextListElement(new StringBuilder("Chand"));*/
-										 
+														 
 					
 					//method to set the state of the button if certain rules are met
 					setStateOfDeleteButton();

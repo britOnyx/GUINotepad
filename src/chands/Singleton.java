@@ -65,6 +65,7 @@ public class Singleton {
     						"contents varchar(6500) NOT NULL);");
     		
     		System.out.println("Created Lists Table!");
+    		statement.close();
     	}else
     	{
     		
@@ -78,10 +79,14 @@ public class Singleton {
     			//int id = res.getInt("listItemID");
     			StringBuilder contents = new StringBuilder(res.getString("contents"));
     			txtList.add(contents);
+    			
     		}
+    		
+    		statement.close();
+    		
     	}
     	
-    	
+
 	}
 
 	public static Singleton getInstance() {
@@ -110,7 +115,8 @@ public class Singleton {
 		prep.setString(2, contents.toString());
 		
 		prep.execute();
-		
+		prep.closeOnCompletion();
+		connect.close();
 	}
 	
 	public void getDataFromDB(int posn) throws SQLException
@@ -118,7 +124,8 @@ public class Singleton {
 		PreparedStatement prep = connect.prepareStatement("SELECT * FROM lists WHERE noteID = " + posn);
 		
 		prep.execute();
-		
+		prep.closeOnCompletion();
+		connect.close();
 		ResultSet rs = prep.getResultSet();
 				
 		int notePosn;
@@ -163,10 +170,32 @@ public class Singleton {
     //replaces the contents in the list based on the position given
     public void editTextListElement(int pos, StringBuilder contents)
     {
+    	
+    	//
+    	System.out.println("Editing Singleton...");
+    	alterDatabase(pos,contents);
     	txtList.set(pos,contents);
     }
     
-    //gets the ArrayList
+    private void alterDatabase(int pos, StringBuilder contents) {
+		
+  		//item update Data
+  		PreparedStatement prep;
+  		
+		try {
+			prep = connect.prepareStatement("UPDATE lists SET contents = '" + contents + "' WHERE noteID = " + pos);
+			
+			prep.execute();
+			prep.close();
+			connect.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+  		
+	}
+
+	//gets the ArrayList
     public ArrayList<StringBuilder> getList()
     {
     	return txtList;
@@ -220,6 +249,7 @@ public class Singleton {
   		//item deleted
   		PreparedStatement prep = connect.prepareStatement("DELETE FROM lists WHERE noteID = " + posn);
   		prep.execute();
+  		prep.closeOnCompletion();
   		
 		//re-align the note Posn and alter the noteID
   		alterNoteID();
@@ -232,7 +262,6 @@ public class Singleton {
     	prepSize.execute();
 		ResultSet rsSize = prepSize.getResultSet();
 		
-		
 		int posn=1;
 		int size =rsSize.getInt(1);
 		System.out.println("new Size: " + size);
@@ -241,7 +270,7 @@ public class Singleton {
 		prepSize.execute();
 		ResultSet rs = prepSize.getResultSet();
 		
-		
+		prepSize.close();
 		while(rs.next())
 		{
 			
@@ -260,11 +289,16 @@ public class Singleton {
 				//alter noteID to current value in posn
 				prepSize = connect.prepareStatement("UPDATE lists SET noteID = " + posn + " WHERE noteID = " +oldNoteID);
 				prepSize.execute();
+				prepSize.close();
+				connect.close();
+				
 			}else {
 				
 				System.out.println("Matches!");
 			}
 			posn++;
 		}
+		
+
 	}
 }

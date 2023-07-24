@@ -80,10 +80,16 @@ public class TextEditor extends JFrame {
 				
 
 				if(frameTitle.contains("Edit Note")) {
+					
+					System.out.println("Editing Note....");
 
 					if(!textArea.getText().equals(""))
 					{
+						System.out.println("Editing Note....");
 						Singleton.getInstance().editTextListElement(Singleton.getInstance().getSelectectedUIIndex(), new StringBuilder(textArea.getText()));
+						
+						Singleton.getInstance().getTempMainFrame().setVisible(true);
+						dispose();
 					}else
 					{
 						frameERROR err = new frameERROR();
@@ -126,6 +132,8 @@ public class TextEditor extends JFrame {
 				
 			}
 		});
+		
+		
 		btnSaveNote.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		
 		JButton btnCancel = new JButton("Cancel");
